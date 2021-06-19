@@ -15,9 +15,40 @@ if(isset($_POST['apply']))
     $address  =$_POST['address'];
     $pass    =$_POST['pass'];
     $con_pass =$_POST['con_pass'];
+    $length = strlen ($phone);
+    $len =   strlen ($nid);
+    $len1=strlen($pass);
+    $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
+   
 
     $error = array();
-    if(empty($username))
+    if (!preg_match ("/^[0-9]*$/",  $phone) )
+      {  
+        $error['apply']= "Only numeric value is allowed in Mobile No."; 
+       } 
+      else if ( $length !=11) 
+      {  
+        $error['apply']= "Mobile must have 11 digits.";  
+                  
+    } 
+    else if ( $len !=10) {  
+        $error['apply']= "NID must have 10 digits.";  
+                  
+    }
+      else if (!preg_match ($pattern, $email) ){  
+        $error['apply'] = "Email is not valid.";  
+             
+    } 
+    else if($wage <0)
+{
+    $error['apply'] = "Working Age is Not Valid";  
+}
+else if($len1<6)
+{
+    $error['apply'] = "Password Less than 6 digit";  
+}
+
+   else if(empty($username))
     {
         $error['apply']="Enter Username";
     }

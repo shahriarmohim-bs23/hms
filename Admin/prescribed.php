@@ -29,9 +29,9 @@ include("../include/header.php");
                 <div class ="col-md-10">
                 <h5 class="text-center">Givens</h5>
                 <?php
-                                $id=$_SESSION['pharmacist_Id'];
+                              
 
-                                $query="SELECT *from Prescription where Pharmacist_Id=$id";
+                                $query="SELECT *from Prescription ";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);

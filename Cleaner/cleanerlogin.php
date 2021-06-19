@@ -8,15 +8,20 @@ if(isset($_POST['login']))
 	$pass=$_POST['pass'];
 	if($user!=""&&$pass!="")
 	{
-		$query = oci_parse($con, "SELECT * FROM Cleaner WHERE Cleaner_Name= '$user' AND Cleaner_Password = '$pass' AND Cleaner_Status='Approved' ");
+		$query = oci_parse($con, "SELECT * FROM Cleaner WHERE Cleaner_Email= '$user' AND Cleaner_Password = '$pass' AND Cleaner_Status='Approved' ");
 		oci_execute($query);
 		$row = oci_fetch_array($query, OCI_ASSOC);
 
 		$count=oci_num_rows($query);
+        oci_execute($query);
+		$row = oci_fetch_row($query);
+		$id=$row[0];
+        $name=$row[2];
 		
 		if($count==1)
 		{
-			$_SESSION['cleaner']=$user;
+			$_SESSION['cleaner']=$name;
+            $_SESSION['cleaner_Id']=$id;
 
 			header('Location:cleaner.php');
 		
@@ -77,9 +82,9 @@ if(isset($_POST['login']))
                 
                 <form method="post">
                     <div class="form-group">
-                        <label>Username</label>
+                        <label>Email</label>
                         <input type="text" name="uname" class="form-control"
-                        autocomplete="off" placeholder="Enter Username">
+                        autocomplete="off" placeholder="Enter Email">
                     </div>
 
                     <div class="form-group">

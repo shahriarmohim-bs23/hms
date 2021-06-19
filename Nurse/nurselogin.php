@@ -8,18 +8,22 @@ if(isset($_POST['login']))
 	$pass=$_POST['pass'];
 	if($email!=""&&$pass!="")
 	{
-		$query = oci_parse($con, "SELECT * FROM Nurse WHERE Nurse _Email= '$email' AND Nurse_Password = '$pass' AND Nurse_Status='Approved' ");
+		$query = oci_parse($con, "SELECT * FROM Nurse WHERE Nurse_Email= '$email' AND Nurse_Password = '$pass' AND Nurse_Status='Approved' ");
 		oci_execute($query);
 		$row = oci_fetch_array($query, OCI_ASSOC);
 
 		$count=oci_num_rows($query);
+        oci_execute($query);
 		$row = oci_fetch_row($query);
 		$id=$row[0];
+        $name=$row[1];
 		
 		if($count==1)
 		{
 			$_SESSION['nurse']=$email;
 			$_SESSION['nurse_id']=$id;
+            
+			$_SESSION['nurse_name']=$name;
 
 			header('Location:nurse.php');
 		

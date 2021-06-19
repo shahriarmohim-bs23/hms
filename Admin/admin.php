@@ -53,7 +53,7 @@ include("navber.php");
                                     <div class="col-md-8">
                                     
                                         <h5 class="my-2 text-white"
-                                        style="font-size: 30px;">0</h5>
+                                        style="font-size: 30px;">1</h5>
                                         <h5 class="text-white">Total</h5>
                                         <h5 class="text-white">Admin</h5>
 
@@ -157,7 +157,7 @@ include("navber.php");
 
                                     <?php
                                  
-                                 $query = " SELECT *from d where status='pending'";
+                                 $query = "SELECT *from Doctor where Doctor_Status='Pending'";
                                  $stid = oci_parse($con, $query);
                                  oci_execute($stid);
                                  $count=oci_fetch_all($stid, $results);

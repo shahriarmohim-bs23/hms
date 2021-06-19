@@ -5,6 +5,7 @@ $c= rand(1,1000);
 if(isset($_POST['apply']))
 {
     $username = $_POST['uname'];
+    $email =$_POST['email'];
     $gender = $_POST['gender'];
     $shift = $_POST['shift'];
     $phone  = $_POST['phone']; 
@@ -13,12 +14,19 @@ if(isset($_POST['apply']))
     $address  =$_POST['address'];
     $pass    =$_POST['pass'];
     $con_pass =$_POST['con_pass'];
+     $length =strlen ($phone);
+     $len =strlen ($nid);
+     $len1=strlen($pass);
+     $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
+    
 
     $error = array();
+    
     if(empty($username))
     {
         $error['apply']="Enter Username";
     }
+    
     else if(empty($gender))
     {
         $error['apply']="Enter Gender";
@@ -52,13 +60,39 @@ if(isset($_POST['apply']))
     {
         $error['apply']="Both Password do not match";
     }
+   else if (!preg_match ("/^[0-9]*$/",  $phone) ){  
+    $error['apply']= "Only numeric value is allowed in Mobile No."; 
+   } 
+  
+  else if (!preg_match ($pattern, $email) ){  
+    $error['apply'] = "Email is not valid.";  
+         
+} 
+else if($age<0)
+{
+    $error['apply'] = "Age is Not Valid";  
+}
+else if($len1<6)
+{
+    $error['apply'] = "Password Less than 6 digit";  
+}
+else if ( $length !=11) {  
+    $error['apply']= "Mobile must have 11 digits.";  
+              
+} 
+else if ( $len!=10) {  
+    $error['apply']= "NID must have 10  digits.";  
+              
+}
+  
     if(count($error)==0)
     {
-        $query = oci_parse($con, "INSERT INTO Cleaner values($c,'$username','$address','$phone','$shift','$age',3000,'$pass','$nid','$gender','Pending')");
+        $query = oci_parse($con, "INSERT INTO Cleaner values($c,'$email','$username','$address','$phone','$shift','$age',3000,'$pass','$nid','$gender','Pending')");
 	
         oci_execute($query);
         if($query)
         {
+           
             echo "<script>alert('You have Successfully Applied')</script>";
             header("Loacation: Cleanerlogin.php");
 
@@ -154,6 +188,12 @@ if(isset($_POST['apply']))
                         <input type="text" name="uname" class="form-control"
                         autocomplete="off" placeholder="Enter Username">
                     </div>
+                       
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="text" name="email" class="form-control"
+                        autocomplete="off" placeholder="Enter Email">
+                    </div>
                     
                     <div class="form-group">
                         <label>Select Gender</label>
@@ -197,6 +237,7 @@ if(isset($_POST['apply']))
                         <input type="text" name="address" class="form-control"
                         autocomplete="off" placeholder="Enter Address">
                     </div>
+                    
                     
 
                     <div class="form-group">

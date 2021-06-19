@@ -5,7 +5,7 @@ session_start();
 <!Doctype html>
 <html>
 <head>
-<title>Prescribed</title>
+<title>Admission History</title>
 </head>
 <body>
 <?Php
@@ -27,11 +27,11 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center">Givens</h5>
+                <h5 class="text-center">Booked Room</h5>
                 <?php
-                                $id=$_SESSION['pharmacist_Id'];
+                                     $id=$_SESSION['patient_Id'];
 
-                                $query="SELECT *from Prescription where Pharmacist_Id=$id";
+                                $query="SELECT *from  Admission where Patient_Id= $id";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);
@@ -41,11 +41,16 @@ include("../include/header.php");
     $output .="
     <table class='table table-bordered'>
     <tr>
-    <th>Medicine</th>
-    <th>Pharmacist</th>
-    <th>Patient</th>
-    <th>Prescribed Date</th>
-  
+    <th>Room ID</th>
+   
+    <th>Room Type</th>
+    <th>Room Charge</th>
+    <th>Admission Date</th>
+    
+    <th>Discharge Date</th>
+    
+    
+
 
     </tr>
 
@@ -55,7 +60,7 @@ if($count<1)
 {
     $output .="
     <tr>
-    <td colspan='8'>NO patient.</td>
+    <td colspan='8'>NO Room Booked.</td>
     </tr>
     
     
@@ -70,31 +75,23 @@ oci_execute($stid);
 while($row = oci_fetch_row($stid))
 {
    
-    $mid=$row[0];
-    $phid=$row[1];
-    $pid=$row[2];
-    $date=$row[3];
-    $query1 = "SELECT *from Medicine where Medicine_Id='$mid'";
-    $stid1 = oci_parse($con, $query1);
+    $id1=$row[0];
+    $query1="SELECT *from Room where Room_Id=$id1";
+ 
+    $stid1= oci_parse($con, $query1);
     oci_execute($stid1);
     $row1 = oci_fetch_row($stid1);
-    $mname=$row1[1];
-    $query1 = "SELECT *from Pharmacist where Pharmacist_Id='$phid'";
-    $stid1 = oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
-    $phname=$row1[11];
-    $query1 = "SELECT *from Patient where Patient_Id='$pid'";
-    $stid1 = oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
-    $pname=$row1[1];
+ 
 
     $output .= "<tr>
-    <td>".$mname."</td>
-    <td>".$phname."</td>
-    <td>".$pname."</td>
-    <td>".$date."</td>
+    <td>".$row1[0]."</td>
+    <td>".$row1[1]."</td>
+    <td>".$row1[2]."</td>
+  
+    <td>".$row[2]."</td>
+    <td>".$row[3]."</td>
+   
+    
    
    ";
 }

@@ -24,6 +24,9 @@
                         <a href="pharm.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                            Pharmacist
                         </a>
+                        <a href="prescribed.php" class="list-group-item list-group-item-action bg-info text-center text-white">
+                           Prescribed
+                        </a>
                         <a href="nurse.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                            Nurse
                         </a>

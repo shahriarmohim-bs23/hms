@@ -28,13 +28,13 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center"> <?php echo $_SESSION['cleaner'];?>'s Profile</h5>
+                <h5 class="text-center"> <?php echo $_SESSION['nurse_name'];?>'s Profile</h5>
                 <?php
                 
-                                    $username= $_SESSION['cleaner'];
-                                    $query="SELECT *from Cleaner where Cleaner_Name='$username'";
+                                    $id= $_SESSION['nurse_id'];
+                                    $query="SELECT *from Nurse where Nurse_Id='$id'";
 
-                                $stid = oci_parse($con, $query);
+                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);
                                  $row = oci_fetch_row($stid);
                            
@@ -43,11 +43,12 @@ include("../include/header.php");
                 ?>
                 <div class="row">
                 <div class="col-md-8">
-                <h5  class="text-center"><?php echo $_SESSION['cleaner'];?>'s Details</h5>
+                <h5  class="text-center"><?php echo $_SESSION['nurse_name'];?>'s Details</h5>
                 <h5 class="my-3">ID:<?php echo $row[0];?> </h5>
                 <h5 class="my-3">Salary:<?php echo $row[7];?> </h5>
                 <h5 class="my-3">Shift:<?php echo $row[5];?> </h5>
-                <h5 class="my-3">Email:<?php echo $row[1];?> </h5>
+                <h5 class="my-3">Religion:<?php echo $row[6];?> </h5>
+                <h5 class="my-3">Gender:<?php echo $row[11];?> </h5>
                 
                 
                                            
@@ -63,14 +64,15 @@ include("../include/header.php");
                     $mobile = $_POST['mobile'];
                     $age = $_POST['age'];
                     $nid = $_POST['nid'];
-                    $gender = $_POST['gender'];
-                    $_SESSION['cleaner']=  $user;
+                    $email = $_POST['email'];
+                 
 
-                    
+                    $_SESSION['nurse']=$email;
 
                    
-                    $query = "UPDATE Cleaner SET Cleaner_Name ='$user',Cleaner_Address= '$address',Cleaner_Phone='$mobile',Cleaner_Age=$age,
-                    Cleaner_Nid = '$nid',Cleaner_Gender='$gender' where  Cleaner_Name ='$username' ";
+                    $query = "UPDATE Nurse SET Nurse_Email='$email',Nurse_Name ='$user',Nurse_Address= '$address',Nurse_Phone='$mobile',          Nurse_WorkingAge=$age,
+                    Nurse_Nid = '$nid' where  Nurse_Id='$id' ";
+                  
                     $stid = oci_parse($con, $query);
                     oci_execute($stid);
                     
@@ -86,7 +88,7 @@ include("../include/header.php");
                     }
                     if(count($error)==0)
                     {
-                        $query = "UPDATE Cleaner SET Cleaner_Password= '$pass' where  Cleaner_Name='$username' ";
+                        $query = "UPDATE Nurse SET Nurse_Password= '$pass' where  Nurse_Id='$id' ";
                         $stid = oci_parse($con, $query);
                         oci_execute($stid);
                       
@@ -110,6 +112,11 @@ include("../include/header.php");
                 <div class="form-group">
                 <label>Edit Username</label>
                 <input type="text"name="uname"class="form-control" autocomplete="off"placeholder="Edit Username"
+                value="<?php echo $row[1]?>">
+                </div>
+                <div class="form-group">
+                <label>Edit Email</label>
+                <input type="text"name="email"class="form-control" autocomplete="off"placeholder="Edit Email"
                 value="<?php echo $row[2]?>">
                 </div>
                 <div class="form-group">
@@ -123,24 +130,18 @@ include("../include/header.php");
                 value="<?php echo $row[4]?>">
                 </div>
                 <div class="form-group">
-                <label>Edit Age</label>
-                <input type="text"name="age"class="form-control" autocomplete="off"placeholder="Edit Age"
-                value="<?php echo $row[6]?>">
+                <label>Edit Working Age</label>
+                <input type="text"name="age"class="form-control" autocomplete="off"placeholder="Edit Working Age"
+                value="<?php echo $row[8]?>">
                 </div>
                 <div class="form-group">
                 <label>Edit NID</label>
                 <input type="text"name="nid"class="form-control" autocomplete="off"placeholder="Edit NID"
-                value="<?php echo $row[9]?>">
+                value="<?php echo $row[10]?>">
                 </div>
-                <div class="form-group">
-                     <label>Edit Gender </label>
-                        <select name="gender" class="form-control" >
-                            <option value=""><?php echo $row[10]?></option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            
-                        </select>
-                    </div>
+                
+
+                    
                 
                 
                 
