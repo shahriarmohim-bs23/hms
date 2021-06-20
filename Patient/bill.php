@@ -6,7 +6,7 @@ session_start();
 <!Doctype html>
 
     <head>
-        <title>Room</title>
+        <title>Bill</title>
     </head>
     <body>
     <?php
@@ -27,15 +27,15 @@ session_start();
            <div class="col-md-12">
                <div class="row">
                    <div class="col-md-8">
-                       <h5 class ="text-center">Room</h5>
+                       <h5 class ="text-center">Bill</h5>
                        <?php
 
                       
 
 
+                     $id = $_SESSION['patient_Id'];
 
-
-                      $query = "SELECT *from Room";
+                      $query = "SELECT *from Bill where Patient_Id=$id and Bill_Status='Not Paid'";
                       $stid = oci_parse($con, $query);
                       oci_execute($stid);
                       
@@ -45,41 +45,33 @@ session_start();
         
 
                       $out="<table class ='table  table-bordered'>
-                      <th>Room ID</th>
-                      <th>Room Type</th>
-                      <th>Room Price(Taka)</th>
-                      <th>Cleaner Name</th>
-                      <th>Room Status</th>
+                      <th>Medicine Fee</th>
+                      <th>Room Fee</th>
+                      <th>Doctor Fee</th>
+                      <th>Hospital Fee</th>
+                      <th>Staff Fee</th>
+                      <th>Total Fee</th>
                      ";
                       
                       if($count<1)
                       {
-                          $out .="<tr><td colspan='5' class='text-center'> No Room</td></tr>";
+                          $out .="<tr><td colspan='5' class='text-center'> No Bil</td></tr>";
 
                       }
                       oci_execute($stid);
                       while($row = oci_fetch_row($stid))
                       {
-                          $id=$row[0];
-                          $name=$row[1];
-                          
-                          $price=$row[2];
-                      
-                          $status=$row[4];
-                          
-                          $stid1 = oci_parse($con, "SELECT *from Cleaner where Cleaner_Id='$row[3]'");
-                          oci_execute($stid1);
-                          $row1 = oci_fetch_row($stid1);
-                          $cleaner1=$row1[2];
+                         
                           
 
                           $out .= "<tr>
-                          <td>$id</td>
-                          <td>$name</td>
+                          <td>$row[0]</td>
+                          <td>$row[1]</td>
+                          <td>$row[2]</td>
+                          <td>$row[3]</td>
+                          <td>$row[4]</td>
+                          <td>$row[5]</td>
                           
-                          <td>$price</td>
-                          <td>$cleaner1</td>
-                          <td>$status</td>
                         ";
 
                       }
@@ -100,10 +92,10 @@ session_start();
                         if(isset($_POST['add']))
                         {
                            
-                            $type=$_POST['type'];
-                            $cost=$_POST['cost'];
-                            $Cleaner=$_POST['Cleaner'];
-                          
+                            $Date=$_POST['date'];
+                            $Date=date('d-m-y', strtotime($Date));
+                            $mode=$_POST['mode'];
+                            
                             
                        
                         
@@ -111,26 +103,26 @@ session_start();
                             $error =array();
                             
                             
-                           if(empty($type))
+                           if(empty($Date))
                             {
-                                $error['u']="Enter Type";
+                                $error['u']="Enter Date";
                             }
-                            else if(empty($cost))
+                            else if(empty($mode))
                             {
-                                $error['u']="Enter Room Cost";
+                                $error['u']="Enter Bill MODE";
                             }
-                            else if(empty($Cleaner))
-                            {
-                                $error['u']="Enter Cleaner ID";
-                            }
+                            
                             
                             if(count($error)==0)
                             {
-                            
-                              $query = "INSERT INTO Room VALUES (Room_Id.nextval, '$type','$cost','$Cleaner','Not Booked')";
+                                $query = "UPDATE  Admission SET Discharge_Date=to_date('$Date','DD/MM/YYYY') where Patient_Id=$id";
+                                $stid = oci_parse($con, $query);
+                        
+                                 oci_execute($stid);
+                              $query = "UPDATE Bill SET Bill_Status='Paid',Bill_Mode='$mode' ,Payment_Date=to_date('$Date','DD/MM/YYYY') where Patient_Id=$id and Bill_Status='Not Paid'";
                               $stid = oci_parse($con, $query);
                       
-                             oci_execute($stid);
+                               oci_execute($stid);
                             
                           //   $query="SELECT
                             // MAX(Room_Id) FROM
@@ -152,7 +144,7 @@ session_start();
 
                        ?>
                
-                       <h5 class ="text-center">Add Room</h5>
+                       <h5 class ="text-center">Bill Pay</h5>
                        
                        <form method="post" enctype="multipart/form-data">
                        <div>
@@ -174,27 +166,26 @@ session_start();
 
 
 
-                         <div class="from-group">
-                             <label>Room Type</label>
-                             <input type="text" name="type"  class="form-control"  placeholder="Enter Room Type"
-                             autocomplete="off">              
-                            </div>
+                        <div class="form-group">
+                     <label>Bill Mode</label>
+                        <select name="mode" class="form-control" >
+                            <option value="">Bill Mode</option>
+                            <option value="cash">Cash</option>
+                            <option value="card">Card</option>
+                           
+                        </select>
+                    </div>
 
-                            <div class="from-group">
-                             <label>Room Cost</label>
-                             <input type="number" name="cost"  class="form-control"  placeholder="Enter Room Cost"
-                             autocomplete="off">              
-                            </div>
+                           
 
-                            <div class="from-group">
-                             <label>Cleaner ID</label>
-                             <input type="number" name="Cleaner"  class="form-control" placeholder="Enter Cleaner ID"
-                             autocomplete="off">              
-                            </div>
-                            
+                            <div class="form-group">
+                            <label>Payment Date </label>
+                           <input type="date" name="date" class="form-control"
+                            autocomplete="off">
+                             </div>
                             
                             </br>
-                            <input type="submit" name="add" value="Add New Room" class="btn btn-success">
+                            <input type="submit" name="add" value="Pay" class="btn btn-success">
 
                     </form>
 

@@ -5,7 +5,7 @@ session_start();
 <!Doctype html>
 <html>
 <head>
-<title>Book appointment</title>
+<title>Bill History</title>
 </head>
 <body>
 <?Php
@@ -27,23 +27,30 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center">Book Room</h5>
+                <h5 class="text-center">Bill history</h5>
                 <?php
+                $id = $_SESSION['cashier_Id'];
 
-                                $query="SELECT *from Room where Room_Status ='Not Booked'";
-
-                                $stid = oci_parse($con, $query);
-                                 oci_execute($stid);
-                                 $count=oci_fetch_all($stid, $results);
+                $query = "SELECT *from Bill where Cashier_Id=$id";
+                $stid = oci_parse($con, $query);
+                oci_execute($stid);
+                
+                 $count=oci_fetch_all($stid, $results);
                                  $output ="";
 
     $output .="
     <table class='table table-bordered'>
     <tr>
-    <th>Room ID</th>
-    <th>Room Type</th>
-    <th>Room Cost</th>
-    <th>Action</th>
+    <th>Patient ID</th>
+    <th>Medicine Fee</th>
+    <th>Room Fee</th>
+    <th>Doctor Fee</th>
+    <th>Hospital Fee</th>
+    <th>Staff Fee</th>
+    <th>Total Fee</th>
+    <th>Payment Date</th>
+    <th>Bill Mode</th>
+    <th>Bill Status</th>
 
 
     </tr>
@@ -54,7 +61,7 @@ if($count<1)
 {
     $output .="
     <tr>
-    <td colspan='8'>NO Room Available.</td>
+    <td colspan='8'>NO Room.</td>
     </tr>
     
     
@@ -72,14 +79,17 @@ while($row = oci_fetch_row($stid))
    
 
     $output .= "<tr>
+    <td>".$row[8]."</td>
     <td>".$row[0]."</td>
     <td>".$row[1]."</td>
     <td>".$row[2]."</td>
+    <td>".$row[3]."</td>
+    <td>".$row[4]."</td>
+    <td>".$row[5]."</td>
+    <td>".$row[6]."</td>
+    <td>".$row[7]."</td>
+    <td>".$row[10]."</td>
    
-    <td>
-    <a href='book.php?id=".$row[0]."'>
-          <button  id=".$row[0]." class='btn btn-info'>BOOK ROOM</button>
-      </a>
       </td>";
 }
 
@@ -97,4 +107,3 @@ echo $output;
 </div>
 </body>
 </html>
-       

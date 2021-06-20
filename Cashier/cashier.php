@@ -50,16 +50,22 @@ include("navber.php");$con = oci_connect("system", "abedur11", "localhost/XE");
                                     <div class="col-md-8">
                                     <?php
                                  
-                                 $query = "SELECT *from Cashier ";
-                                 $stid = oci_parse($con, $query);
-                                 oci_execute($stid);
-                                 $count=oci_fetch_all($stid, $results);
+                                    $query="SELECT
+                             sum(Total_Fee) FROM
+                             Bill group by Patient_Id";
+                             $stid = oci_parse($con, $query);
+                             oci_execute($stid);
+                             
+                             $row = oci_fetch_row($stid);
+                             $count=$row[0];
+                             
+
                                    
                                     ?>
                                         <h5 class="my-2 text-white"
-                                        style="font-size: 30px;"><?php echo $count;?></h5>
-                                        <h5 class="text-white">Total</h5>
-                                        <h5 class="text-white">Cashier</h5>
+                                        style="font-size: 30px;"><?php echo $count;?> </h5>
+                                        <h5 class="text-white"> Taka  Total </h5>
+                                        <h5 class="text-white">Bill created</h5>
 
                                     </div>
                                     <div class="col-md-4">
