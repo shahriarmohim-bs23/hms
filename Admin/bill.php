@@ -27,7 +27,7 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center">Bill history</h5>
+                <h5 class="text-center">Bill</h5>
                 <?php
                
 
@@ -49,9 +49,9 @@ include("../include/header.php");
     <th>Doctor Fee</th>
     <th>Hospital Fee</th>
     <th>Staff Fee</th>
-    <th>Total Fee</th>
-    <th>Payment Date</th>
     <th>Bill Mode</th>
+    <th>Payment Date</th>
+  
     <th>Bill Status</th>
 
 
@@ -81,7 +81,7 @@ while($row = oci_fetch_row($stid))
    
 
     $output .= "<tr>
-    <td>".$row[8]."</td>
+   
     <td>".$row[0]."</td>
     <td>".$row[1]."</td>
     <td>".$row[2]."</td>
@@ -90,10 +90,11 @@ while($row = oci_fetch_row($stid))
     <td>".$row[5]."</td>
     <td>".$row[6]."</td>
     <td>".$row[7]."</td>
-    <td>".$row[10]."</td>
-    <td>".$row[10]."</td>
+    <td>".$row[8]."</td>
+    <td>".$row[9]."</td>
+    
    
-      </td>";
+      ";
 }
 
 $output .="
