@@ -31,7 +31,9 @@ include("../include/header.php");
                 <?php
                               
 
-                                $query="SELECT *from Prescription ";
+                                $query="select Medicine_Name,Pharmacist_Name,Patient_Name,prescription_date
+                                from Prescription P inner join Patient Pa on P.Patient_Id = Pa.Patient_Id inner join Pharmacist Ph on  P.Pharmacist_Id =  Ph.Pharmacist_Id inner join
+                                Medicine M on P.Medicine_Id = M.Medicine_Id";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);
@@ -70,31 +72,15 @@ oci_execute($stid);
 while($row = oci_fetch_row($stid))
 {
    
-    $mid=$row[0];
-    $phid=$row[1];
-    $pid=$row[2];
-    $date=$row[3];
-    $query1 = "SELECT *from Medicine where Medicine_Id='$mid'";
-    $stid1 = oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
-    $mname=$row1[1];
-    $query1 = "SELECT *from Pharmacist where Pharmacist_Id='$phid'";
-    $stid1 = oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
-    $phname=$row1[11];
-    $query1 = "SELECT *from Patient where Patient_Id='$pid'";
-    $stid1 = oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
-    $pname=$row1[1];
+   
+
+    
 
     $output .= "<tr>
-    <td>".$mname."</td>
-    <td>".$phname."</td>
-    <td>".$pname."</td>
-    <td>".$date."</td>
+    <td>".$row[0]."</td>
+    <td>".$row[1]."</td>
+    <td>".$row[2]."</td>
+    <td>".$row[3]."</td>
    
    ";
 }

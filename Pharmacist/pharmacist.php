@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-
+$con = oci_connect("system", "abedur11", "localhost/XE");
 ?>
 
 <!DOCTYPE html>
@@ -48,10 +48,19 @@ include("navber.php");
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-8">
+                                    <?php
+                             
+                             $query = "SELECT *from Pharmacist";
+                             $stid = oci_parse($con, $query);
+                             oci_execute($stid);
+                             $count=oci_fetch_all($stid, $results);
+                               
+                                   
+                                    ?>
                                         <h5 class="my-2 text-white"
-                                        style="font-size: 30px;">0</h5>
+                                        style="font-size: 30px;"><?php echo $count;?></h5>
                                         <h5 class="text-white">Total</h5>
-                                        <h5 class="text-white">Admin</h5>
+                                        <h5 class="text-white">Pharmacist</h5>
 
                                     </div>
                                     <div class="col-md-4">
@@ -62,26 +71,6 @@ include("navber.php");
 
                             </div>
                         </div>
-
-                            <div class="col-md-3 bg-info mx-2" style="height: 130px;">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h5 class="my-2 text-white"
-                                        style="font-size: 30px;">0</h5>
-                                        <h5 class="text-white">Total</h5>
-                                        <h5 class="text-white">Doctors</h5>
-
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="#"><i class="fa fa-user-md fa-3x my-4" style="color: white;"></i></a>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            </div>
 
          
 </body>

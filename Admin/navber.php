@@ -21,6 +21,9 @@
                         <a href="cash.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                             Cashiers
                         </a>
+                        <a href="bill.php" class="list-group-item list-group-item-action bg-info text-center text-white">
+                            Bill
+                        </a>
                         <a href="pharm.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                            Pharmacist
                         </a>
