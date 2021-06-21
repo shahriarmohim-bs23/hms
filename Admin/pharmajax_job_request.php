@@ -18,6 +18,7 @@ $output .="
     <th>Experience</th>
     <th>Institution Name</th>
     <th>Degrees</th>
+    <th>Certificate</th>
     <th>Action</th>
 
 
@@ -53,6 +54,11 @@ while($row = oci_fetch_row($stid))
     <td>".$row[5]."</td>
     <td>".$row[8]."</td>
     <td>".$row[9]."</td>
+    <td>
+    <a href='pharmacist-download.php?id=".$row[0]."'>
+          <button  id=".$row[0]." class='btn btn-info'>Download</button>
+      </a>
+    </td>
     <td>
      <div class='col-md-1'>
          <div class='row'>

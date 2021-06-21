@@ -30,6 +30,16 @@ if(isset($_POST['apply']))
      $len1=strlen($pass);
     $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
 
+    $filename =$_FILES['cert']['name'];
+
+     $target_dir = "uploads/";
+     $destination = $target_dir . basename($_FILES["cert"]["name"]);
+     $extension = pathinfo($filename,PATHINFO_EXTENSION);
+     $uploadOk = 1;
+ 
+     $file = $_FILES['cert']['tmp_name'];
+     $size = $_FILES['cert']['size'];
+
     $error = array();
      if ( $length !=11) {  
         $error['apply']= "Mobile must have 11 digits.";  
@@ -117,26 +127,35 @@ else if($len1<6)
     
 
 
-                
+    if(count($error)==0)
+    {
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'png'])) {
+            echo "You file extension must be .zip, .pdf , .docx or .png";
+        } 
+        elseif ($_FILES['cert']['size'] > 1000000) { // file shouldn't be larger than 1Megabyte
+            echo "File too large!";
+        } 
+        else {
+            // move the uploaded (temporary) file to the specified destination
+            if (move_uploaded_file($file, $destination)) {
+
+                $query = oci_parse($con, "INSERT INTO  Doctor values($c,'$username','$email', '$address','$phone',40000,to_date('$Date','DD/MM/YYYY'),'$offday','$dept', '$shedule','$specialization',$rate,'$nid','$qualification','$pass','Pending','$filename')");         
+                oci_execute($query);
+
+                if($query)
+                {
+                    echo "<script>alert('You have Successfully Applied')</script>";
+                    //header("Location: doctorlogin.php");
+                }
+            }
+            else {
+                echo "<Script>alert('Failed')</script>";
+            }
+        }
+    }           
    
    
                   
-    if(count($error)==0)
-    {
-        $query = oci_parse($con, "INSERT INTO  Doctor values($c,'$username','$email', '$address','$phone',40000,to_date('$Date','DD/MM/YYYY'),'$offday','$dept', '$shedule','$specialization',$rate,'$nid','$qualification','$pass','Pending')");
-	
-        oci_execute($query);
-        if($query)
-        {
-            echo "<script>alert('You have Successfully Applied')</script>";
-            header("Loacation: doctorlogin.php");
-
-        }
-        else
-        {
-            echo "<Script>alert('Failed')</script>";
-        }
-    }
 }
     if(isset($error['apply']))
     {
@@ -148,10 +167,6 @@ else if($len1<6)
         $show ="";
     }
     
-
-
-
-
 
 
 
@@ -207,7 +222,7 @@ else if($len1<6)
                 echo $show;
                 
                 ?>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     
 
                     
@@ -314,8 +329,13 @@ else if($len1<6)
                         autocomplete="off" placeholder="Enter Confirm Password">
                     </div>
 
+                    <div class="form-group">
+                        <label>Upload your certificate: </label>
+                        <input type="file" name="cert" class="form-control">
+                    </div>
+
                     <input type="submit" name="apply" value="Apply Now" class="btn btn-success">
-                    <p>I already have an account <a href="cashierlogin.php">Click here</a></p>
+                    <p>I already have an account <a href="doctorlogin.php">Click here</a></p>
                     </form>
 
             </div>
@@ -327,3 +347,4 @@ else if($len1<6)
 
 </body>
 </html>
+

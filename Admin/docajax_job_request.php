@@ -15,7 +15,8 @@ $output .="
     <th>ID</th>
     <th>USERNAME</th>
     <th>Email</th>
-    <th>Date Registered</th>
+    <th>Qualification</th>
+    <th>Certificate</th>
     <th>Action</th>
 
 
@@ -48,7 +49,12 @@ while($row = oci_fetch_row($stid))
     <td>".$row[0]."</td>
     <td>".$row[1]."</td>
     <td>".$row[2]."</td>
-    <td>".$row[3]."</td>
+    <td>".$row[13]."</td>
+    <td>
+    <a href='doctor-download.php?id=".$row[0]."'>
+          <button  id=".$row[0]." class='btn btn-info'>Download</button>
+      </a>
+    </td>
     <td>
      <div class='col-md-2'>
          <div class='row'>

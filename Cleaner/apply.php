@@ -2,11 +2,15 @@
 $con = oci_connect("system", "abedur11", "localhost/XE");
 $c= rand(1,1000);
 
+
+
 if(isset($_POST['apply']))
 {
+    
     $username = $_POST['uname'];
     $email =$_POST['email'];
     $gender = $_POST['gender'];
+    $email =$_POST['email'];
     $shift = $_POST['shift'];
     $phone  = $_POST['phone']; 
     $nid      = $_POST['nid'];
@@ -14,23 +18,35 @@ if(isset($_POST['apply']))
     $address  =$_POST['address'];
     $pass    =$_POST['pass'];
     $con_pass =$_POST['con_pass'];
-     $length =strlen ($phone);
+    $filename =$_FILES['cert']['name'];
+    $length =strlen ($phone);
      $len =strlen ($nid);
      $len1=strlen($pass);
-     $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
-    
+     $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^"; 
+
+    $target_dir = "uploads/";
+    $destination = $target_dir . basename($_FILES["cert"]["name"]);
+    $extension = pathinfo($filename,PATHINFO_EXTENSION);
+    $uploadOk = 1;
+
+    $file = $_FILES['cert']['tmp_name'];
+    $size = $_FILES['cert']['size'];
+
 
     $error = array();
-    
     if(empty($username))
     {
         $error['apply']="Enter Username";
     }
-    
+    if(empty($email))
+    {
+        $error['apply']="Enter Email";
+    }
     else if(empty($gender))
     {
         $error['apply']="Enter Gender";
     }
+    
     else  if(empty($shift))
     {
         $error['apply']="Enter Shift";
@@ -60,47 +76,58 @@ if(isset($_POST['apply']))
     {
         $error['apply']="Both Password do not match";
     }
-   else if (!preg_match ("/^[0-9]*$/",  $phone) ){  
-    $error['apply']= "Only numeric value is allowed in Mobile No."; 
-   } 
-  
-  else if (!preg_match ($pattern, $email) ){  
-    $error['apply'] = "Email is not valid.";  
-         
-} 
-else if($age<0)
-{
-    $error['apply'] = "Age is Not Valid";  
-}
-else if($len1<6)
-{
-    $error['apply'] = "Password Less than 6 digit";  
-}
-else if ( $length !=11) {  
-    $error['apply']= "Mobile must have 11 digits.";  
-              
-} 
-else if ( $len!=10) {  
-    $error['apply']= "NID must have 10  digits.";  
-              
-}
-  
+    else if (!preg_match ("/^[0-9]*$/",  $phone) ){  
+        $error['apply']= "Only numeric value is allowed in Mobile No."; 
+       } 
+      
+      else if (!preg_match ($pattern, $email) ){  
+        $error['apply'] = "Email is not valid.";  
+             
+    } 
+    else if($age<0)
+    {
+        $error['apply'] = "Age is Not Valid";  
+    }
+    else if($len1<6)
+    {
+        $error['apply'] = "Password Less than 6 digit";  
+    }
+    else if ( $length !=11) {  
+        $error['apply']= "Mobile must have 11 digits.";  
+                  
+    } 
+    else if ( $len!=10) {  
+        $error['apply']= "NID must have 10  digits.";  
+                  
+    }
     if(count($error)==0)
     {
-        $query = oci_parse($con, "INSERT INTO Cleaner values($c,'$email','$username','$address','$phone','$shift','$age',3000,'$pass','$nid','$gender','Pending')");
-	
-        oci_execute($query);
-        if($query)
-        {
-           
-            echo "<script>alert('You have Successfully Applied')</script>";
-            header("Loacation: Cleanerlogin.php");
+        
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'png'])) {
+            echo "You file extension must be .zip, .pdf , .docx or .png";
+        } 
+        elseif ($_FILES['cert']['size'] > 1000000) { // file shouldn't be larger than 1Megabyte
+            echo "File too large!";
+        } 
+        else {
+            // move the uploaded (temporary) file to the specified destination
+            if (move_uploaded_file($file, $destination)) {
 
+                $query = oci_parse($con, "INSERT INTO Cleaner values($c,'$email','$username','$address','$phone','$shift','$age',3000,'$pass','$nid','$gender','Pending','$filename')");                
+               $stid = oci_execute($query);
+
+                if( $stid )
+                {
+                    echo "<script>alert('You have Successfully Applied')</script>";
+                    //header("Location: Cleanerlogin.php");
+                }
+            }
+            else {
+                echo "<Script>alert('Failed')</script>";
+            }
         }
-        else
-        {
-            echo "<Script>alert('Failed')</script>";
-        }
+        
+	
     }
 }
     if(isset($error['apply']))
@@ -113,14 +140,6 @@ else if ( $len!=10) {
         $show ="";
     }
     
-
-
-
-
-
-
-
-
 
 
 ?>
@@ -179,7 +198,7 @@ else if ( $len!=10) {
                 echo $show;
                 
                 ?>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     
 
                     
@@ -188,13 +207,11 @@ else if ( $len!=10) {
                         <input type="text" name="uname" class="form-control"
                         autocomplete="off" placeholder="Enter Username">
                     </div>
-                       
                     <div class="form-group">
                         <label>Email</label>
                         <input type="text" name="email" class="form-control"
                         autocomplete="off" placeholder="Enter Email">
                     </div>
-                    
                     <div class="form-group">
                         <label>Select Gender</label>
                         <select name="gender" class="form-control" >
@@ -216,7 +233,7 @@ else if ( $len!=10) {
                     </div>
 
                     <div class="form-group">
-                        <label>Phone Number</label>
+                        <label>Phone  Number</label>
                         <input type="text" name="phone" class="form-control" autocomplete="off" placeholder="Enter Phone Number">
                         
                     </div>
@@ -238,7 +255,6 @@ else if ( $len!=10) {
                         autocomplete="off" placeholder="Enter Address">
                     </div>
                     
-                    
 
                     <div class="form-group">
                         <label>Password</label>
@@ -250,6 +266,13 @@ else if ( $len!=10) {
                         <input type="password" name="con_pass" class="form-control"
                         autocomplete="off" placeholder="Enter Confirm Password">
                     </div>
+
+                    <div class="form-group">
+                        <label>Upload your certificate: </label>
+                        <input type="file" name="cert" class="form-control">
+                    </div>
+
+
 
                     <input type="submit" name="apply" value="Apply Now" class="btn btn-success">
                     <p>I already have an account <a href="cleanerlogin.php">Click here</a></p>
@@ -264,3 +287,7 @@ else if ( $len!=10) {
 
 </body>
 </html>
+
+
+
+

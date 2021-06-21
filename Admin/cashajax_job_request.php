@@ -17,6 +17,7 @@ $output .="
     <th>Shift</th>
     <th>Age</th>
     <th>NID</th>
+    <th>Certificate</th>
     <th>Action</th>
 
 
@@ -52,13 +53,18 @@ while($row = oci_fetch_row($stid))
     <td>".$row[5]."</td>
     <td>".$row[8]."</td>
     <td>
+    <a href='cashier-download.php?id=".$row[0]."'>
+          <button  id=".$row[0]." class='btn btn-info'>Download</button>
+      </a>
+    </td>
+    <td>
      <div class='col-md-1'>
          <div class='row'>
          <div class='col-md-6'>
-         <button id='".$row[0]."' class='btn btn-success approve'>Approve</button>
+         <button id='".$row[1]."' class='btn btn-success approve'>Approve</button>
          </div>
          <div class='col-md-6'>
-         <button id='".$row[0]."' 
+         <button id='".$row[1]."' 
          class='btn btn-danger reject'>Reject</button>
          </div>
     </div>

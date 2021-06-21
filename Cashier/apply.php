@@ -1,5 +1,5 @@
 <?php
-$con = oci_connect("system", "abedur11", "localhost/XE");
+$con =  oci_connect("system", "abedur11", "localhost/XE");
 $c= rand(1,1000);
 
 if(isset($_POST['apply']))
@@ -21,6 +21,15 @@ if(isset($_POST['apply']))
     $len1=strlen($pass);
    $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
    
+   $filename =$_FILES['cert']['name'];
+
+     $target_dir = "uploads/";
+     $destination = $target_dir . basename($_FILES["cert"]["name"]);
+     $extension = pathinfo($filename,PATHINFO_EXTENSION);
+     $uploadOk = 1;
+ 
+     $file = $_FILES['cert']['tmp_name'];
+     $size = $_FILES['cert']['size'];
 
     $error = array();
     if(empty($username))
@@ -92,22 +101,36 @@ if(isset($_POST['apply']))
     {
         $error['apply'] = "Password Less than 6 digit";  
     }
+    
+
     if(count($error)==0)
     {
-        $query = oci_parse($con, "INSERT INTO Cashier values($c,'$email','$address','$phone','$shift',$age,15000,'$nid','$institute','$qualification','$pass','$username','Pending')");
-	
-        oci_execute($query);
-        if($query)
-        {
-            echo "<script>alert('You have Successfully Applied')</script>";
-            header("Loacation: Cashierlogin.php");
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'png'])) {
+            echo "You file extension must be .zip, .pdf , .docx or .png";
+        } 
+        elseif ($_FILES['cert']['size'] > 1000000) { // file shouldn't be larger than 1Megabyte
+            echo "File too large!";
+        } 
+        else {
+            // move the uploaded (temporary) file to the specified destination
+            if (move_uploaded_file($file, $destination)) {
 
+                $query = oci_parse($con, "INSERT INTO Cashier values($c,'$email','$address','$phone','$shift',$age,15000,'$nid','$institute','$qualification','$pass','$username','Pending','$filename' )");       
+                oci_execute($query);
+
+                if($query)
+                {
+                    echo "<script>alert('You have Successfully Applied')</script>";
+                    //header("Location: cashierlogin.php");
+                }
+            }
+            else {
+                echo "<Script>alert('Failed')</script>";
+            }
         }
-        else
-        {
-            echo "<Script>alert('Failed')</script>";
-        }
-    }
+    }   
+
+
 }
     if(isset($error['apply']))
     {
@@ -185,7 +208,7 @@ if(isset($_POST['apply']))
                 echo $show;
                 
                 ?>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     
 
                     
@@ -257,6 +280,11 @@ if(isset($_POST['apply']))
                         <label>Confirm Password</label>
                         <input type="password" name="con_pass" class="form-control"
                         autocomplete="off" placeholder="Enter Confirm Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload your certificate: </label>
+                        <input type="file" name="cert" class="form-control">
                     </div>
 
                     <input type="submit" name="apply" value="Apply Now" class="btn btn-success">

@@ -17,6 +17,7 @@ $output .="
     <th>Shift</th>
     <th>Age</th>
     <th>NID</th>
+    <th>Certificate</th>
     <th>Action</th>
 
 
@@ -51,6 +52,11 @@ while($row = oci_fetch_row($stid))
     <td>".$row[4]."</td>
     <td>".$row[5]."</td>
     <td>".$row[8]."</td>
+    <td>
+    <a href='cleaner-download.php?id=".$row[0]."'>
+          <button  id=".$row[0]." class='btn btn-info'>Download</button>
+      </a>
+      </td>
     <td>
      <div class='col-md-1'>
          <div class='row'>

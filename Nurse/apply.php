@@ -21,6 +21,17 @@ if(isset($_POST['apply']))
     $pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$^";  
    
 
+    $filename =$_FILES['cert']['name'];
+
+     $target_dir = "uploads/";
+     $destination = $target_dir . basename($_FILES["cert"]["name"]);
+     $extension = pathinfo($filename,PATHINFO_EXTENSION);
+     $uploadOk = 1;
+ 
+     $file = $_FILES['cert']['tmp_name'];
+     $size = $_FILES['cert']['size'];
+
+
     $error = array();
     if (!preg_match ("/^[0-9]*$/",  $phone) )
       {  
@@ -94,23 +105,35 @@ else if($len1<6)
     {
         $error['apply']="Both Password do not match";
     }
+
+
     if(count($error)==0)
     {
-      
-        $query = oci_parse($con, "INSERT INTO   Nurse values($c,'$username','$email','$address','$phone','$shift','$rel',3000,'$wage','$pass','$nid','$gender','Pending')");
-	
-        oci_execute($query);
-        if($query)
-        {
-            echo "<script>alert('You have Successfully Applied')</script>";
-            header("Loacation: Cleanerlogin.php");
+        if (!in_array($extension, ['zip', 'pdf', 'docx', 'png'])) {
+            echo "You file extension must be .zip, .pdf , .docx or .png";
+        } 
+        elseif ($_FILES['cert']['size'] > 1000000) { // file shouldn't be larger than 1Megabyte
+            echo "File too large!";
+        } 
+        else {
+            // move the uploaded (temporary) file to the specified destination
+            if (move_uploaded_file($file, $destination)) {
 
+                $query = oci_parse($con, "INSERT INTO   Nurse values($c,'$username','$email','$address','$phone','$shift','$rel',3000,'$wage','$pass','$nid','$gender','Pending','$filename' )");       
+                oci_execute($query);
+
+                if($query)
+                {
+                    echo "<script>alert('You have Successfully Applied')</script>";
+                    //header("Location: nurselogin.php");
+                }
+            }
+            else {
+                echo "<Script>alert('Failed')</script>";
+            }
         }
-        else
-        {
-            echo "<Script>alert('Failed')</script>";
-        }
-    }
+    }   
+
 }
     if(isset($error['apply']))
     {
@@ -188,7 +211,7 @@ else if($len1<6)
                 echo $show;
                 
                 ?>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     
 
                     
@@ -261,6 +284,11 @@ else if($len1<6)
                         <label>Confirm Password</label>
                         <input type="password" name="con_pass" class="form-control"
                         autocomplete="off" placeholder="Enter Confirm Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload your certificate: </label>
+                        <input type="file" name="cert" class="form-control">
                     </div>
 
                     <input type="submit" name="apply" value="Apply Now" class="btn btn-success">
