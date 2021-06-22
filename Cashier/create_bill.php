@@ -75,15 +75,13 @@ if(isset($_POST['appoint']))
 ?>
  <?php
                                  $Id = $_GET['id']; 
-                                 $query = "SELECT *from Admission where Patient_Id='$Id'";
+                                  $query = "select Room_Cost
+                                 from  Room R, Admission Ad
+                                 where  R.Room_Id = Ad.Room_Id and Ad.Patient_Id=$Id";
                                  $stid = oci_parse($con, $query);
                                 
                                  oci_execute($stid);
-	                             $row = oci_fetch_row($stid);
-                                 $id3=$row[0];
-                                 $query = "SELECT *from Room where Room_Id='$id3'";
-                                 $stid = oci_parse($con, $query);
-                                 oci_execute($stid);
+	                            
                                  
 		                         $row = oci_fetch_row($stid);
 
@@ -128,7 +126,7 @@ if(isset($_POST['appoint']))
                     <div class="form-group">
                         <label>Room Fee: </label>
                         <input type="number" name="room" class="form-control"
-                        autocomplete="off"  value="<?php echo $row[2]?>">
+                        autocomplete="off"  value="<?php echo $row[0]?>">
                     </div>
                     <div class="form-group">
                         <label>Doctor Fee: </label>
