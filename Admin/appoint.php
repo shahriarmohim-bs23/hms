@@ -5,7 +5,7 @@ session_start();
 <!Doctype html>
 <html>
 <head>
-<title>Appointment</title>
+<title>Appointment History</title>
 </head>
 <body>
 <?Php
@@ -27,14 +27,15 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center">Patients</h5>
+                <h5 class="text-center">Appointment</h5>
                 <?php
-               $id = $_SESSION['doctor_Id'];
+                                 
 
-                                $query="select P.Patient_Id,Patient_Name,Patient_Phone,Patient_Symptom,Appoint_Date,Appoint_Time,Appoint_Status
-                                from Patient P,Appointment A where P.Patient_Id = A.Patient_Id and A.Doctor_Id=$id and  Appoint_Status='Pending'";
+                                $query="select Patient_Name,Patient_Symptom,Doctor_Name,Doctor_Specialization,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Patient P,Doctor D,Appointment A
+                                where P.Patient_Id = A.Patient_Id and D.Doctor_Id = A.Doctor_Id";
 
-                                 $stid = oci_parse($con, $query);
+                                $stid = oci_parse($con, $query);
                                  oci_execute($stid);
                                  $count=oci_fetch_all($stid, $results);
                                  $output ="";
@@ -42,13 +43,16 @@ include("../include/header.php");
     $output .="
     <table class='table table-bordered'>
     <tr>
-    <th>ID</th>
-    <th>USERNAME</th>
-    <th>Mobile Number</th>
-    <th>Symptom</th>
+    <th>Patient Name</th>
+    <th>Patient Symptom</th>
+    <th>Doctor Name</th>
+    <th>Specialization</th>
+    
     <th>Date</th>
     <th>Time</th>
     <th>Status</th>
+    
+
 
     </tr>
 
@@ -58,7 +62,7 @@ if($count<1)
 {
     $output .="
     <tr>
-    <td colspan='8'>NO Patient.</td>
+    <td colspan='8'>NO DOCTOR.</td>
     </tr>
     
     
@@ -73,21 +77,20 @@ oci_execute($stid);
 while($row = oci_fetch_row($stid))
 {
    
-   
+    
+ 
 
     $output .= "<tr>
-   
     <td>".$row[0]."</td>
     <td>".$row[1]."</td>
     <td>".$row[2]."</td>
     <td>".$row[3]."</td>
     <td>".$row[4]."</td>
     <td>".$row[5]."</td>
-    <td>
-    <a href='approve.php?id=".$row[1]."'>
-          <button  id=".$row[1]." class='btn btn-info'>Approve</button>
-      </a>
-      </td>";
+    <td>".$row[6]."</td>
+    
+   
+   ";
 }
 
 $output .="

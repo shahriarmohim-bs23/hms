@@ -31,7 +31,9 @@ include("../include/header.php");
                 <?php
                                      $id=$_SESSION['patient_Id'];
 
-                                $query="SELECT *from  Appointment where Patient_Id= $id";
+                                $query="select D.Doctor_Id,Doctor_Name,Doctor_Specialization,Doctor_Phone,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Doctor D,Appointment A
+                                where  D.Doctor_Id = A.Doctor_Id and A.Patient_Id= $id";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);
@@ -74,22 +76,16 @@ oci_execute($stid);
 while($row = oci_fetch_row($stid))
 {
    
-    $id1=$row[0];
-    $query1="SELECT *from Doctor where Doctor_Id=$id1";
- 
-    $stid1= oci_parse($con, $query1);
-    oci_execute($stid1);
-    $row1 = oci_fetch_row($stid1);
- 
+   
 
     $output .= "<tr>
-    <td>".$row1[0]."</td>
-    <td>".$row1[1]."</td>
-    <td>".$row1[10]."</td>
-    <td>".$row1[4]."</td>
+    <td>".$row[0]."</td>
+    <td>".$row[1]."</td>
     <td>".$row[2]."</td>
     <td>".$row[3]."</td>
     <td>".$row[4]."</td>
+    <td>".$row[5]."</td>
+    <td>".$row[6]."</td>
     
    
    ";

@@ -5,7 +5,7 @@ session_start();
 <!Doctype html>
 <html>
 <head>
-<title>Appointment</title>
+<title>Admission History</title>
 </head>
 <body>
 <?Php
@@ -27,14 +27,15 @@ include("../include/header.php");
 
              
                 <div class ="col-md-10">
-                <h5 class="text-center">Patients</h5>
+                <h5 class="text-center">Admitted patient</h5>
                 <?php
-               $id = $_SESSION['doctor_Id'];
+                                   
 
-                                $query="select P.Patient_Id,Patient_Name,Patient_Phone,Patient_Symptom,Appoint_Date,Appoint_Time,Appoint_Status
-                                from Patient P,Appointment A where P.Patient_Id = A.Patient_Id and A.Doctor_Id=$id and  Appoint_Status='Pending'";
+                                $query="select Patient_Name,Patient_Symptom,R.Room_Id,Room_Type,Room_Cost,Admission_date,Discharge_Date
+                                from Patient P, Room R, Admission Ad
+                                where P.Patient_Id = Ad.Patient_Id and R.Room_Id = Ad.Room_Id";
 
-                                 $stid = oci_parse($con, $query);
+                                $stid = oci_parse($con, $query);
                                  oci_execute($stid);
                                  $count=oci_fetch_all($stid, $results);
                                  $output ="";
@@ -42,13 +43,18 @@ include("../include/header.php");
     $output .="
     <table class='table table-bordered'>
     <tr>
-    <th>ID</th>
-    <th>USERNAME</th>
-    <th>Mobile Number</th>
-    <th>Symptom</th>
-    <th>Date</th>
-    <th>Time</th>
-    <th>Status</th>
+    <th>Patient Name</th>
+   
+    <th>Patient Symptom</th>
+    <th>Room Id</th>
+    <th>Room Type</th>
+   
+    <th>Room Cost</th>
+    <th>Admission Date</th>
+    <th>Discharge Date</th>
+    
+    
+
 
     </tr>
 
@@ -58,7 +64,7 @@ if($count<1)
 {
     $output .="
     <tr>
-    <td colspan='8'>NO Patient.</td>
+    <td colspan='8'>NO Room Booked.</td>
     </tr>
     
     
@@ -74,20 +80,21 @@ while($row = oci_fetch_row($stid))
 {
    
    
+ 
 
     $output .= "<tr>
-   
     <td>".$row[0]."</td>
     <td>".$row[1]."</td>
     <td>".$row[2]."</td>
+  
     <td>".$row[3]."</td>
     <td>".$row[4]."</td>
     <td>".$row[5]."</td>
-    <td>
-    <a href='approve.php?id=".$row[1]."'>
-          <button  id=".$row[1]." class='btn btn-info'>Approve</button>
-      </a>
-      </td>";
+    <td>".$row[6]."</td>
+   
+    
+   
+   ";
 }
 
 $output .="

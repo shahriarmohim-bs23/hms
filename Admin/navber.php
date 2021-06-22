@@ -14,6 +14,9 @@
                         <a href="doc.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                             Doctors
                         </a>
+                        <a href="appoint.php" class="list-group-item list-group-item-action bg-info text-center text-white">
+                           Appointment
+                        </a>
                         
                         <a href="cle.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                             Cleaners
@@ -38,6 +41,9 @@
                         </a>
                         <a href="nursing.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                            Nursing
+                        </a>
+                        <a href="admitted.php" class="list-group-item list-group-item-action bg-info text-center text-white">
+                           Admitted patient
                         </a>
                         <a href="profile.php" class="list-group-item list-group-item-action bg-info text-center text-white">
                           profile
