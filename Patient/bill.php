@@ -34,8 +34,9 @@ session_start();
 
 
                      $id = $_SESSION['patient_Id'];
+                     
 
-                      $query = "SELECT *from Bill where Patient_Id=$id and Bill_Status='Not Paid'";
+                      $query = "SELECT *from Bill where Patient_Id=$id and Bill_Status='Not paid'";
                       $stid = oci_parse($con, $query);
                       oci_execute($stid);
                       
@@ -115,26 +116,16 @@ session_start();
                             
                             if(count($error)==0)
                             {
-                                $query = "UPDATE  Admission SET Discharge_Date=to_date('$Date','DD/MM/YYYY') where Patient_Id=$id";
-                                $stid = oci_parse($con, $query);
-                        
-                                 oci_execute($stid);
-                              $query = "UPDATE Bill SET Bill_Status='Paid',Bill_Mode='$mode' ,Payment_Date=to_date('$Date','DD/MM/YYYY') where Patient_Id=$id and Bill_Status='Not Paid'";
-                              $stid = oci_parse($con, $query);
-                      
-                               oci_execute($stid);
+                              
+
+
+   $query = oci_parse($con,
+    "begin
+    Bill_Admission(to_date('$Date','DD/MM/YYYY'),'$mode','$id');
+    end;");
+    oci_execute($query);
                             
-                          //   $query="SELECT
-                            // MAX(Room_Id) FROM
-                            // Room";
-                            // $stid = oci_parse($con, $query);
-                            // oci_execute($stid);
-                            //$row = oci_fetch_row($stid);
-                           //  $id=$row[0];
-                             // $query = "INSERT INTO Nursing VALUES ('$nurse','$id')";
-                             // $stid = oci_parse($con, $query);
-                      
-                              // oci_execute($stid);
+                        
 
                              
                             }

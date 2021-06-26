@@ -58,7 +58,7 @@
              else if(isset($_SESSION['nurse']))
              {
                 $user = $_SESSION['nurse'];
-                echo '<li class="nav-item"><a href= "#" class="nav-link text-white">'.$user.'</a></li>
+                echo '<li class="nav-item"><a href= "nurse.php" class="nav-link text-white">'.$user.'</a></li>
                 <li class="nav-item"><a href= "logout.php" class="nav-link text-white">Logout</a></li>';
 
              }

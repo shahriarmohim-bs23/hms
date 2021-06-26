@@ -75,15 +75,19 @@ if(isset($_POST['appoint']))
 ?>
  <?php
                                  $Id = $_GET['id']; 
-                                  $query = "select Room_Cost
+                                $query = "select R.Room_Id, Room_Cost
                                  from  Room R, Admission Ad
-                                 where  R.Room_Id = Ad.Room_Id and Ad.Patient_Id=$Id";
+                                 where  R.Room_Id = Ad.Room_Id and Ad.Patient_Id=$Id and Discharge_Date is NULL";
                                  $stid = oci_parse($con, $query);
                                 
                                  oci_execute($stid);
 	                            
                                  
 		                         $row = oci_fetch_row($stid);
+                                 $id2=$row[0];
+                                 $query="UPDATE Room set Room_Status='Not Booked' where Room_Id='$id2'";
+                                 $stid = oci_parse($con, $query);
+                                 oci_execute($stid);
 
                                    
 ?>
@@ -126,7 +130,7 @@ if(isset($_POST['appoint']))
                     <div class="form-group">
                         <label>Room Fee: </label>
                         <input type="number" name="room" class="form-control"
-                        autocomplete="off"  value="<?php echo $row[0]?>">
+                        autocomplete="off"  value="<?php echo $row[1]?>">
                     </div>
                     <div class="form-group">
                         <label>Doctor Fee: </label>

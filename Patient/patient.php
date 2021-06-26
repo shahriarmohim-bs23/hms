@@ -51,14 +51,20 @@ include("navber.php");
                                     <div class="col-md-8">
                                     <?php
                                    $id = $_SESSION['patient_Id'];
-                                 $query = "SELECT *from Bill where Patient_Id=$id and Bill_Status='Not Paid'";
+                                 $query = "SELECT *from Bill where Patient_Id=$id and Bill_Status='Not paid'";
                                  $stid = oci_parse($con, $query);
                                  oci_execute($stid);
                                  $count=oci_fetch_all($stid, $results);
+                                 oci_execute($stid);
                                  if($count==1){
                                  
                                  $row = oci_fetch_row($stid);
                                  $count=$row[5];
+                                 
+                                 }
+                                 else
+                                 {
+                                    $count=0;  
                                  }
                                    
                                     ?>

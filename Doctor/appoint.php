@@ -84,8 +84,8 @@ while($row = oci_fetch_row($stid))
     <td>".$row[4]."</td>
     <td>".$row[5]."</td>
     <td>
-    <a href='approve.php?id=".$row[1]."'>
-          <button  id=".$row[1]." class='btn btn-info'>Approve</button>
+    <a href='approve.php?id=".$row[0]."'>
+          <button  id=".$row[0]." class='btn btn-info'>Approve</button>
       </a>
       </td>";
 }

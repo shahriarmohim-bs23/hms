@@ -15,8 +15,12 @@ include("../include/header.php");
 if(isset($_POST['appoint']))
 {
                 $Date=$_POST['date'];
+              
                 $Date=date('d-m-y', strtotime($Date));
                 
+                
+                $date1='100-01-01';
+                $date1=date('d-m-y', strtotime($date1));
                 
                  $Id = $_GET['id'];
                  $Id2 = $_SESSION['patient_Id'];
@@ -32,12 +36,13 @@ if(isset($_POST['appoint']))
                   
     if(count($error)==0)
     {
-        $query = oci_parse($con, "INSERT INTO  Admission(Room_Id,Patient_Id,Admission_date) values('$Id','$Id2', to_date('$Date','DD/MM/YYYY'))");
-	
+        
+
+        $query = oci_parse($con,
+        "begin
+        Room_Admission(to_date('$Date','DD/MM/YYYY'),'$Id','$Id2');
+        end;");
         oci_execute($query);
-        $query = "UPDATE Room SET Room_Status='BooKed' where Room_Id=$Id";
-        $stid = oci_parse($con, $query);
-        oci_execute($stid);
         
     }
 }

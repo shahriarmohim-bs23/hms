@@ -13,13 +13,15 @@ if(isset($_POST['login']))
 		$row = oci_fetch_array($query, OCI_ASSOC);
 
 		$count=oci_num_rows($query);
-        oci_execute($query);
-		$row = oci_fetch_row($query);
-		$id=$row[0];
-        $name=$row[1];
+        $stid=oci_execute($query);
 		
 		if($count==1)
 		{
+            oci_execute($query);
+            $row = oci_fetch_row($query);
+		    $id=$row[0];
+            $name=$row[1];
+		
 			$_SESSION['doctor']=$user;
             $_SESSION['doctor_Id']=$row[0];
             $_SESSION['doctor_Name']=$row[1];

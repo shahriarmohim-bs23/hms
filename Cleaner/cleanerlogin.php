@@ -14,12 +14,14 @@ if(isset($_POST['login']))
 
 		$count=oci_num_rows($query);
         oci_execute($query);
-		$row = oci_fetch_row($query);
-		$id=$row[0];
-        $name=$row[2];
+		
 		
 		if($count==1)
 		{
+            oci_execute($query);
+		$row = oci_fetch_row($query);
+		$id=$row[0];
+        $name=$row[2];
 			$_SESSION['cleaner']=$name;
             $_SESSION['cleaner_Id']=$id;
 

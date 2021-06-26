@@ -61,10 +61,10 @@ while($row = oci_fetch_row($stid))
      <div class='col-md-1'>
          <div class='row'>
          <div class='col-md-6'>
-         <button id='".$row[1]."' class='btn btn-success approve'>Approve</button>
+         <button id='".$row[0]."' class='btn btn-success approve'>Approve</button>
          </div>
          <div class='col-md-6'>
-         <button id='".$row[1]."' 
+         <button id='".$row[0]."' 
          class='btn btn-danger reject'>Reject</button>
          </div>
     </div>

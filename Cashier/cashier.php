@@ -55,9 +55,14 @@ include("navber.php");$con = oci_connect("system", "abedur11", "localhost/XE");
                              Bill group by Patient_Id";
                              $stid = oci_parse($con, $query);
                              oci_execute($stid);
-                             
+                             if( oci_execute($stid)){
                              $row = oci_fetch_row($stid);
                              $count=$row[0];
+                             }
+                             else
+                             {
+                                $count=0;
+                             }
                              
 
                                    

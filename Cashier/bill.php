@@ -32,7 +32,7 @@ include("../include/header.php");
 
                                 $query="select P.Patient_Id,Patient_Name,Patient_Phone
                                 from Patient P,Admission Ad
-                                where P.Patient_Id = Ad.Patient_Id";
+                                where P.Patient_Id = Ad.Patient_Id  and Discharge_Date is NULL";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);

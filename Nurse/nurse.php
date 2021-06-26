@@ -1,5 +1,6 @@
 <?php
 session_start();
+$con = oci_connect("system", "abedur11", "localhost/XE");
 
 
 ?>
@@ -48,10 +49,18 @@ include("navber.php");
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-8">
+                                    <?php
+                                 
+                                 $query = "SELECT *from Nurse where Nurse_status='Approved'";
+                                 $stid = oci_parse($con, $query);
+                                 oci_execute($stid);
+                                 $count=oci_fetch_all($stid, $results);
+                                   
+                                    ?>
                                         <h5 class="my-2 text-white"
-                                        style="font-size: 30px;">0</h5>
+                                        style="font-size: 30px;"><?php echo $count;?></h5>
                                         <h5 class="text-white">Total</h5>
-                                        <h5 class="text-white">Admin</h5>
+                                        <h5 class="text-white">Nurse</h5>
 
                                     </div>
                                     <div class="col-md-4">

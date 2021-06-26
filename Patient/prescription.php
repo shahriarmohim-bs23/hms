@@ -30,7 +30,9 @@ include("../include/header.php");
                 <h5 class="text-center">Prescribed</h5>
                 <?php
                                 $id=$_SESSION['patient_Id'];
-                                $query="SELECT *from Prescription where patient_Id='$id'";
+                                $query="select Medicine_Name,Pharmacist_Name,Patient_Name,prescription_date
+                                from Prescription P inner join Patient Pa on P.Patient_Id = Pa.Patient_Id inner join Pharmacist Ph on  P.Pharmacist_Id =  Ph.Pharmacist_Id inner join
+                                Medicine M on P.Medicine_Id = M.Medicine_Id where P.Patient_Id='$id'";
 
                                 $stid = oci_parse($con, $query);
                                  oci_execute($stid);
@@ -68,7 +70,7 @@ if($count<1)
 oci_execute($stid);
 while($row = oci_fetch_row($stid))
 {
-   
+   /*
     $mid=$row[0];
     $phid=$row[1];
     $pid=$row[2];
@@ -88,12 +90,13 @@ while($row = oci_fetch_row($stid))
     oci_execute($stid1);
     $row1 = oci_fetch_row($stid1);
     $pname=$row1[1];
+    */
 
     $output .= "<tr>
-    <td>".$mname."</td>
-    <td>".$phname."</td>
-    <td>".$pname."</td>
-    <td>".$date."</td>
+    <td>".$row[0]."</td>
+    <td>".$row[1]."</td>
+    <td>".$row[2]."</td>
+    <td>".$row[3]."</td>
    
    ";
 }
