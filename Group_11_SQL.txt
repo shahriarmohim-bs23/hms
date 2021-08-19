@@ -1,0 +1,520 @@
+##SQL that written in ORACLE side
+
+######Triggger with PL/SQL
+
+
+create or replace procedure delete_Medicine
+(id1 in number)
+as 
+begin
+
+delete from Medicine where Medicine_Id=id1;
+end;
+
+
+
+
+CREATE OR REPLACE TRIGGER MyTrigger
+after delete ON Medicine
+begin
+declare cursor delete_cursor is
+select Medicine_Id from Medicine where to_Date(Medicine_Date,'DD/MM/YYYY')<to_Date(sysdate,'DD/MM/YYYY');
+delete_val delete_cursor%ROWTYPE;
+begin
+open delete_cursor;
+loop
+fetch delete_cursor into delete_val;
+exit when delete_cursor%NOTFOUND;
+delete_Medicine(delete_val.Medicine_Id);
+end loop;
+close delete_cursor;
+end;
+end;
+
+#######PL/SQL
+create or replace procedure 
+Bill_Admission(Date1 in date ,mode1 in varchar2,id1 in number)
+as 
+begin
+UPDATE  Admission SET Discharge_Date=to_date(date1,'DD/MM/YYYY') where Patient_Id=id1;
+UPDATE Bill SET Bill_Status='Paid',Bill_Mode=mode1 ,Payment_Date=to_date(date1,'DD/MM/YYYY') where Patient_Id=id1 and Bill_Status='Not paid';
+end;
+
+
+
+
+
+create or replace procedure 
+Room_Admission(Date1 in date ,id1 in number,id2 in number)
+as 
+begin
+INSERT INTO  Admission(Room_Id,Patient_Id,Admission_date,Discharge_Date) values(id1,id2, to_date(Date1,'DD/MM/YYYY'),NULL);
+UPDATE Room SET Room_Status='BooKed' where Room_Id=id1;
+end;
+
+create Table Administrator
+(
+Admin_Id Number Not Null,
+Admin_Email VARCHAR2 (40) Not Null,
+Admin_Name VARCHAR2 (40) Not Null,
+Admin_pass VARCHAR2(100)  Not Null,
+primary key (Admin_Id)
+)
+create unique index  Ad on Administrator(Admin_Email);
+create sequence Admin_Id minvalue 1 start
+with 1 INCREMENT BY 1 cache 100;
+
+
+
+
+
+CREATE TABLE Cleaner
+(
+Cleaner_Id Number Not Null,
+Cleaner_Email VARCHAR2 (40) Not Null,
+Cleaner_Name VARCHAR2 (40) Not Null,
+Cleaner_Address VARCHAR2(40)  Not Null,
+Cleaner_Phone VARCHAR2 (20)  Not Null,
+Cleaner_Shift VARCHAR2(10)  Not Null,
+Cleaner_Age Number  Not Null,
+Cleaner_Salary NUMBER   Not Null,
+Cleaner_Password VARCHAR2(100)  Not Null,
+Cleaner_Nid varchar2(20) Not null,
+Cleaner_Gender varchar2(10) Not null,
+
+Cleaner_Status VARCHAR2(10)  Not Null,
+
+primary key (Cleaner_Id)
+);
+create sequence Cleaner_Id minvalue 100601 start
+with 100601 INCREMENT BY 1  cache 100;
+create sequence Admin_Id minvalue 1 start
+with 1 INCREMENT BY 1 cache 100;
+alter  table Cleaner   add Cleaner_File varchar2(100);
+create unique index  C on Cleaner(Cleaner_Id,Cleaner_Email);
+drop sequence Cleaner_Id;
+drop table cleaner;
+select *from Cleaner;
+
+
+
+
+CREATE TABLE Cashier
+(
+Cashier_Id Number Not Null,
+
+Cashier_Email VARCHAR2 (40) Not Null,
+Cashier_Address VARCHAR2(40)  Not Null,
+Cashier_Phone VARCHAR2 (11)  Not Null,
+Cashier_Shift varchar2(10)   Not Null,
+Cashier_Age Number  Not Null,
+Cashier_Salary NUMBER   Not Null,
+Cashier_Nid varchar2(20) Not null,
+Cashier_Institute varchar(100) Not null,
+Cashier_Qualification varchar(500) Not null,
+
+
+
+Cashier_Password VARCHAR2(11)  Not Null,
+Cashier_Name VARCHAR2 (40) Not Null,
+Cashier_Status VARCHAR2(11)  Not Null,
+primary key (Cashier_Id)
+);
+
+create unique index  Cash on Cashier(Cashier_Nid,Cashier_Email);
+alter  table Cashier   add Cashier_File varchar2(100);
+create sequence Cashier_Id minvalue 200601 start
+with 200601 INCREMENT BY 1  cache 100;
+select *from Cashier;
+
+
+CREATE TABLE Pharmacist
+(
+Pharmacist_Id Number Not Null,
+
+Pharmacist_Email VARCHAR2 (40) Not Null,
+Pharmacist_Address VARCHAR2(40)  Not Null,
+Pharmacist_Phone VARCHAR2 (20)  Not Null,
+Pharmacist_Shift varchar2(10)   Not Null,
+Pharmacist_Experience Number Not null,
+Pharmacist_Salary NUMBER   Not Null,
+Pharmacist_Nid varchar2(20) Not null,
+
+Pharmacist_Institute VARCHAR2 (20)  Not Null,
+Pharmacist_Degree VARCHAR2 (500)  Not Null,
+
+Pharmacist_Password VARCHAR2(100)  Not Null,
+Pharmacist_Name VARCHAR2(100)  Not Null,
+Pharmacist_Status VARCHAR2(10)  Not Null,
+
+primary key (Pharmacist_Id)
+);
+
+create unique index  Pharm on Pharmacist(Pharmacist_Nid,Pharmacist_Email);
+alter  table Pharmacist   add Pharmacist_File varchar2(100);
+create sequence pharmacist_Id minvalue 300701 start
+with 300701 INCREMENT BY 1  cache 100;
+
+
+
+
+CREATE TABLE Doctor
+(
+Doctor_Id Number Not Null,
+Doctor_Name VARCHAR2 (40) Not Null,
+Doctor_Email VARCHAR2 (40) Not Null,
+Doctor_Address VARCHAR2(40)  Not Null,
+Doctor_Phone VARCHAR2 (20)  Not Null,
+Doctor_Salary NUMBER   Not Null,
+Docotr_JoiningDate DATE  Not Null,
+Doctor_Offday varchar2(100) Not null,
+Doctor_Department varchar2(100) Not null,
+Doctor_Schedule varchar2(100) Not null,
+Doctor_Specialization varchar2(100) Not null,
+Doctor_VisitingRate NUMBER Not null,
+Doctor_Nid varchar2(20) Not null,
+Doctor_Qualification Varchar2(500) Not null,
+Doctor_Password VARCHAR2(100)  Not Null,
+Doctor_Status VARCHAR2(10)  Not Null,
+
+primary key (Doctor_Id)
+);
+create unique index  Doc on  Doctor(Doctor_Nid,Doctor_Email);
+alter  table Doctor   add Doctor_File varchar2(100);
+
+select *from Doctor;
+drop sequence Doctor_Id;
+create sequence Doctor_Id minvalue 400601 start
+with 400601 INCREMENT BY 1  cache 100;
+
+
+
+CREATE TABLE Nurse
+(
+Nurse_Id Number Not Null,
+Nurse_Name VARCHAR2 (40) Not Null,
+Nurse_Email VARCHAR2 (40) Not Null,
+Nurse_Address VARCHAR2(40)  Not Null,
+Nurse_Phone VARCHAR2 (20)  Not Null,
+Nurse_Shift VARCHAR2(10)  Not Null,
+Nurse_Relegion VARCHAR2(10)  Not Null,
+Nurse_Salary NUMBER   Not Null,
+Nurse_WorkingAge NUMBER   Not Null,
+Nurse_Password VARCHAR2(100)  Not Null,
+Nurse_Nid varchar2(20) Not null,
+Nurse_Gender varchar2(20) Not null,
+Nurse_Status VARCHAR2(10)  Not Null,
+
+primary key (Nurse_Id)
+);
+create unique index  Nurse on  Nurse(Nurse_Nid,Nurse_Email);
+create sequence Nurse_Id minvalue 500601 start
+with 500601 INCREMENT BY 1  cache 100;
+
+alter  table Nurse   add Nurse_File varchar2(100);
+
+
+
+
+create Table Medicine
+(
+Medicine_Id Number Not Null,
+Medicine_Name VARCHAR2 (40) Not Null,
+Medicine_Company VARCHAR2 (40) Not Null,
+Medicine_Price Number  Not Null,
+Medicine_Date Date  Not Null,
+primary key (Medicine_Id)
+)
+create sequence Medicine_Id minvalue 600601 start
+with 600601 INCREMENT BY 1  cache 100;
+
+
+
+
+CREATE TABLE Patient
+(
+Patient_Id Number Not Null,
+Patient_Name VARCHAR2 (40) Not Null,
+Patient_Email VARCHAR2 (40) Not Null,
+Patient_Symptom VARCHAR2(100)  Not Null,
+Patient_Phone VARCHAR2 (20)  Not Null,
+Patient_Age NUMBER   Not Null,
+Patient_Password VARCHAR2(100)  Not Null,
+
+primary key (Patient_Id)
+);
+create unique index  Patient on  Patient(Patient_Email);
+create sequence Patient_Id minvalue 100 start
+with 100 INCREMENT BY 1  cache 100;
+
+create table  Room
+(
+Room_Id Number Not null,
+Room_Type VARCHAR2 (200) Not Null,
+Room_Cost  Number Not null,
+Cleaner_Id Number Not Null,
+Room_Status varchar2(10) not null,
+primary key (Room_Id),
+FOREIGN KEY(Cleaner_Id) REFERENCES Cleaner (Cleaner_Id) ON DELETE  CASCADE
+
+);
+create sequence Room_Id minvalue 9001 start
+with 9001 INCREMENT BY 1  cache 100;
+
+
+Create table Prescribed
+(
+Medicine_Id Number Not null,
+patient_Id Number Not Null,
+  
+  FOREIGN KEY(Medicine_Id) REFERENCES Medicine (Medicine_Id) ON DELETE  CASCADE,
+  FOREIGN KEY(patient_Id) REFERENCES Patient(patient_Id)  ON DELETE CASCADE
+);
+
+Create table Pharmmedicne
+(
+Medicine_Id Number Not null,
+Pharmacist_Id Number Not Null,
+
+  
+  FOREIGN KEY(Medicine_Id) REFERENCES Medicine (Medicine_Id) ON DELETE  CASCADE,
+  FOREIGN KEY(Pharmacist_Id) REFERENCES Pharmacist(Pharmacist_Id)  ON DELETE CASCADE
+  
+);
+Create table Prescription
+(
+Medicine_Id Number Not null,
+Pharmacist_Id Number Not Null,
+patient_Id Number Not Null,
+prescription_date date not null,
+  
+  FOREIGN KEY(Medicine_Id) REFERENCES Medicine (Medicine_Id) ON DELETE  CASCADE,
+  FOREIGN KEY(Pharmacist_Id) REFERENCES Pharmacist(Pharmacist_Id)  ON DELETE CASCADE,
+  FOREIGN KEY(patient_Id) REFERENCES Patient(patient_Id)  ON DELETE CASCADE
+);
+
+
+create table Nursing
+(
+Nurse_Id  number not null,
+Room_Id Number Not null,
+FOREIGN KEY(Nurse_Id) REFERENCES Nurse (Nurse_Id) ON DELETE  CASCADE,
+FOREIGN KEY(Room_Id) REFERENCES Room (Room_Id) ON DELETE  CASCADE
+
+
+);
+
+Create table Appointment
+(
+Doctor_Id Number Not null,
+Patient_Id Number Not Null,
+Appoint_Date date not null, 
+Appoint_Time varchar2(20) not null,
+Appoint_Status  varchar2(10)  not null,
+  
+  FOREIGN KEY(Doctor_Id) REFERENCES Doctor(Doctor_Id)  ON DELETE CASCADE,
+  FOREIGN KEY(Patient_Id) REFERENCES Patient(Patient_Id)  ON DELETE CASCADE
+);
+
+
+create table Admission
+(
+Room_Id Number Not null,
+Patient_Id Number Not Null,
+Admission_date  date not null,
+Discharge_Date date ,
+FOREIGN KEY(Room_Id) REFERENCES Room (Room_Id) ON DELETE  CASCADE,
+FOREIGN KEY(patient_Id) REFERENCES Patient(patient_Id)  ON DELETE CASCADE
+);
+
+create table Bill
+(
+Medicine_Fee number  not null,
+Room_Fee number not null,
+Doctor_Fee number not null,
+Hospital_Fee number not null,
+Staff_Fee number not null,
+Total_Fee number not null,
+Payment_Date date ,
+Bill_Mode varchar2(10),
+Patient_Id Number Not Null,
+Cashier_Id Number Not Null,
+Bill_Status varchar2(10) not null,
+FOREIGN KEY(patient_Id) REFERENCES Patient(patient_Id)  ON DELETE CASCADE,
+FOREIGN KEY(Cashier_Id) REFERENCES Cashier(Cashier_Id)  ON DELETE CASCADE
+);
+
+
+
+
+###SQL that Written in PHP side
+
+
+
+###JOIN
+
+
+select Patient_Name,Patient_Symptom,R.Room_Id,Room_Type,Room_Cost,Admission_date,Discharge_Date
+                                from Patient P, Room R, Admission Ad
+                                where P.Patient_Id = Ad.Patient_Id and R.Room_Id = Ad.Room_Id;
+
+select Patient_Name,Patient_Symptom,Doctor_Name,Doctor_Specialization,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Patient P,Doctor D,Appointment A
+                                where P.Patient_Id = A.Patient_Id and D.Doctor_Id = A.Doctor_Id;
+
+select Patient_Name,Cashier_Name,Medicine_Fee,Room_Fee,Doctor_Fee,Hospital_Fee,Staff_Fee,Bill_Mode,Payment_Date,Bill_Status
+                from Patient P,Cashier C,Bill B where P.Patient_Id = B.Patient_Id and C.Cashier_Id = B.cashier_Id;
+
+
+select Medicine_Name,Pharmacist_Name,Patient_Name,prescription_date
+                                from Prescription P inner join Patient Pa on P.Patient_Id = Pa.Patient_Id inner join Pharmacist Ph on  P.Pharmacist_Id =  Ph.Pharmacist_Id inner join
+                                Medicine M on P.Medicine_Id = M.Medicine_Id;
+
+select P.Patient_Id,Patient_Name,Patient_Phone
+                                from Patient P,Admission Ad
+                                where P.Patient_Id = Ad.Patient_Id  and Discharge_Date is NULL;
+
+SELECT
+                             sum(Total_Fee) FROM
+                             Bill group by Patient_Id;
+
+select R.Room_Id, Room_Cost
+                                 from  Room R, Admission Ad
+                                 where  R.Room_Id = Ad.Room_Id and Ad.Patient_Id=$Id and Discharge_Date is NULL;
+UPDATE Room set Room_Status='Not Booked' where Room_Id='$id2';
+
+
+select P.Patient_Id,Patient_Name,Patient_Phone,Patient_Symptom,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Patient P,Appointment A where P.Patient_Id = A.Patient_Id and A.Doctor_Id=$id and Appoint_Status='Approved';
+
+select P.Patient_Id,Patient_Name,Patient_Phone,Patient_Symptom,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Patient P,Appointment A where P.Patient_Id = A.Patient_Id and A.Doctor_Id=$id and  Appoint_Status='Pending';
+
+select R.Room_Id,Room_Type,Room_Cost,Admission_date,Discharge_Date
+                                from  Room R, Admission Ad
+                                where  R.Room_Id = Ad.Room_Id and Ad.Patient_Id = $id;
+
+
+select Medicine_Name,Pharmacist_Name,Patient_Name,prescription_date
+                                from Prescription P inner join Patient Pa on P.Patient_Id = Pa.Patient_Id inner join Pharmacist Ph on  P.Pharmacist_Id =  Ph.Pharmacist_Id inner join
+                                Medicine M on P.Medicine_Id = M.Medicine_Id where P.Patient_Id='$id';
+
+
+
+
+
+
+select D.Doctor_Id,Doctor_Name,Doctor_Specialization,Doctor_Phone,Appoint_Date,Appoint_Time,Appoint_Status
+                                from Doctor D,Appointment A
+                                where  D.Doctor_Id = A.Doctor_Id and A.Patient_Id= $id;
+select Medicine_Name,Pharmacist_Name,Patient_Name,prescription_date
+                                from Prescription P inner join Patient Pa on P.Patient_Id = Pa.Patient_Id inner join Pharmacist Ph on  P.Pharmacist_Id =  Ph.Pharmacist_Id inner join
+                                Medicine M on P.Medicine_Id = M.Medicine_Id where Ph.Pharmacist_Id=$id;
+
+####PL/SQL call
+
+begin
+    Bill_Admission(to_date('$Date','DD/MM/YYYY'),'$mode','$id');
+    end;
+
+SELECT *from Nurse where Nurse_status='Pending';
+SELECT *from Pharmacist where Pharmacist_status='Pending';
+SELECT *from Cashier where Cashier_status='Pending';
+SELECT *from Doctor where Doctor_Status='Pending';
+SELECT *from Cleaner where Cleaner_status='Pending';
+SELECT *from Administrator Where Admin_Email !='$ad';
+SELECT *from Cashier where Cashier_status ='Approved';
+UPDATE Cashier SET Cashier_Id=Cashier_Id.nextval where Cashier_Id='$id';
+UPDATE Cashier SET Cashier_Status='Approved' where Cashier_Id='$id';
+DELETE  from Cashier  where Cashier_Id=$id;
+SELECT *from Cashier where Cashier_Id=$id;
+UPDATE Cashier SET Cashier_Salary= $salary, Cashier_Shift='$shift'  where Cashier_Id=$id;
+SELECT *from Cleaner where Cleaner_status ='Approved';
+SELECT *from Cleaner where Cleaner_Id=$id;
+UPDATE Cleaner SET Cleaner_Salary= $salary, Cleaner_Shift='$shift'  where Cleaner_Id=$id;
+UPDATE Cleaner SET Cleaner_Status='Approved' where Cleaner_Id=$id;
+UPDATE Cleaner SET Cleaner_Id=Cleaner_Id.nextval where Cleaner_Id=$id;
+DELETE  from Cleaner  where Cleaner_Id=$id;
+SELECT *from Doctor where Doctor_Status ='Approved';
+UPDATE Doctor SET Doctor_Status='Approved' where Doctor_Id=$id;
+UPDATE Doctor SET Doctor_Id=Doctor_Id.nextval where Doctor_Id=$id;
+DELETE  from Doctor where Doctor_Id=$id;
+UPDATE  Doctor SET  Doctor_Salary= $salary,  Doctor_Offday='$offday',
+                    Doctor_Schedule='$shedule' where Doctor_Id=$id";
+SELECT *from Nurse where Nurse_status ='Approved';
+UPDATE Nurse SET Nurse_Status='Approved' where Nurse_Id=$id;
+UPDATE Nurse SET Nurse_Id=Nurse_Id.nextval where Nurse_Id=$id;
+SELECT * FROM Nurse WHERE Nurse_status='Pending;
+DELETE  from Nurse  where Nurse_Id=$id;
+UPDATE Cleaner SET Cleaner_Salary= $salary, Cleaner_Shift='$shift'  where Cleaner_Id=$id;
+SELECT *from Pharmacist where Pharmacist_status ='Approved';
+UPDATE Pharmacist SET Pharmacist_Status='Approved' where Pharmacist_Id=$id;
+UPDATE pharmacist SET pharmacist_Id=pharmacist_Id.nextval where pharmacist_Id=$id;
+DELETE  from Pharmacist  where Pharmacist_Id=$id;
+UPDATE Pharmacist SET Pharmacist_Salary= $salary, Pharmacist_Shift='$shift'  where Pharmacist_Id=$id;
+SELECT *from Administrator where Admin_Email='$email';
+UPDATE  Administrator SET Admin_Name ='$user',Admin_Email='$email1'
+                    where  Admin_Email='$email';
+UPDATE  Administrator SET Admin_pass= '$pass' where  Admin_Email='$email';
+INSERT INTO Room VALUES (Room_Id.nextval, '$type','$cost','$Cleaner','Not Booked');
+SELECT *from Bill where Cashier_Id=$id;
+
+
+
+INSERT INTO Administrator  VALUES (Admin_Id.nextval, '$email','$uname','$pass');
+SELECT * FROM Administrator WHERE Admin_Email= '$email' AND Admin_pass= '$pass';
+SELECT * FROM Cashier WHERE Cashier_Email= '$email' AND Cashier_Password = '$pass' And Cashier_Status='Approved';
+UPDATE Cashier SET Cashier_Name ='$user',Cashier_Address= '$address',Cashier_Phone='$mobile',Cashier_Age=$age,
+                    Cashier_Nid = '$nid',Cashier_Institute='$institution',Cashier_Qualification='$qualification' where  Cashier_Id='$Id';
+UPDATE Cashier SET Cashier_Password= '$pass' where  Cashier_Id='$Id';
+INSERT INTO Cashier values($c,'$email','$address','$phone','$shift',$age,15000,'$nid','$institute','$qualification','$pass','$username','Pending','$filename' );
+INSERT INTO Cleaner values($c,'$email','$username','$address','$phone','$shift','$age',3000,'$pass','$nid','$gender','Pending','$filename');
+INSERT INTO  Doctor values($c,'$username','$email', '$address','$phone',40000,to_date('$Date','DD/MM/YYYY'),'$offday','$dept', '$shedule','$specialization',$rate,'$nid','$qualification','$pass','Pending','$filename');
+INSERT INTO   Nurse values($c,'$username','$email','$address','$phone','$shift','$rel',3000,'$wage','$pass','$nid','$gender','Pending','$filename' );
+INSERT INTO Patient values(Patient_Id.nextval,'$username','$email','$symptoms','$phone','$age','$pass');
+INSERT INTO Pharmacist values($c,'$email','$address','$phone','$shift',$experience,15000,'$nid','$institute','$qualification','$pass','$username','Pending','$filename' );
+INSERT INTO Medicine  VALUES (Medicine_Id.nextval, '$mname','$company','$price',to_date('$Date','DD/MM/YYYY'));
+
+SELECT * FROM Cleaner WHERE Cleaner_Email= '$user' AND Cleaner_Password = '$pass' AND Cleaner_Status='Approved';
+SELECT *from Cleaner where Cleaner_Name='$username';
+UPDATE Cleaner SET Cleaner_Name ='$user',Cleaner_Address= '$address',Cleaner_Phone='$mobile',Cleaner_Age=$age,
+                    Cleaner_Nid = '$nid',Cleaner_Gender='$gender' where  Cleaner_Name ='$username';
+SELECT *from Room where Cleaner_Id=$id;
+SELECT *from Nurse where Nurse_status='Approved';
+SELECT * FROM Nurse WHERE Nurse_Email= '$email' AND Nurse_Password = '$pass' AND Nurse_Status='Approved' ;
+UPDATE Appointment SET Appoint_Status='Approved' where Patient_Id=$id;
+SELECT *from  Appointment where Doctor_Id=$id and Appoint_Status='Pending';
+SELECT * FROM Doctor WHERE Doctor_Email= '$user' AND Doctor_Password = '$pass' AND Doctor_Status='Approved';
+UPDATE Doctor SET Doctor_Name ='$user',Doctor_Address= '$address',Doctor_Phone='$mobile',
+                    Doctor_Nid = '$nid',   Doctor_VisitingRate='$rate', Doctor_Offday='$off',Doctor_Email='$email' where Doctor_Id='$Id';
+UPDATE Doctor SET Doctor_Password= '$pass' where  Doctor_Id='$Id';
+UPDATE Nurse SET Nurse_Email='$email',Nurse_Name ='$user',Nurse_Address= '$address',Nurse_Phone='$mobile',          Nurse_WorkingAge=$age,
+                    Nurse_Nid = '$nid' where  Nurse_Id='$id';
+UPDATE Nurse SET Nurse_Password= '$pass' where  Nurse_Id='$id' ;
+UPDATE patient SET patient_Name='$user',patient_Email= '$email',Patient_Symptom= '$symptom',patient_Phone='$mobile',patient_Age =$age
+           where patient_Id='$Id';
+UPDATE patient SET patient_Password= '$pass' where  patient_Id='$Id';
+UPDATE Pharmacist SET Pharmacist_Name='$user',Pharmacist_Address= '$address',Pharmacist_Phone='$mobile',Pharmacist_Experience=$age,
+                    Pharmacist_Nid = '$nid',Pharmacist_Institute='$institution',Pharmacist_Degree='$qualification' where Pharmacist_Id='$Id' ;
+
+UPDATE Pharmacist SET Pharmacist_Password= '$pass' where  Pharmacist_Id='$Id';
+SELECT *from Nursing where Nurse_Id=$id;
+SELECT *from Room where Room_Id='$id1';
+SELECT *from Room where Room_Status ='Not Booked';
+SELECT *from Bill where Patient_Id=$id and Bill_Status='Paid';
+SELECT *from Bill where Patient_Id=$id and Bill_Status='Not paid';
+SELECT * FROM Patient WHERE Patient_Email= '$email' AND Patient_Password = '$pass';
+SELECT *from Prescription where patient_Id='$id';
+SELECT *from Medicine where Medicine_Name='$medicine';
+SELECT * FROM Pharmacist WHERE Pharmacist_Email= '$email' AND Pharmacist_Password = '$pass' AND Pharmacist_Status='Approved' ;
+INSERT INTO  Appointment values('$Id','$Id2', to_date('$Date','DD/MM/YYYY'),'$Time','Pending' );
+INSERT INTO Prescription values($mid,$pid,$id,to_date('$Date','DD/MM/YYYY'));
+DELETE from Medicine WHERE Medicine_ID ='$id';
+
+
+
+
+
+
+
+
